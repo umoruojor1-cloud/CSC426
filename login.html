@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CSC426</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: #111;
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid #1e1e1e;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    /* ── Form Section ── */
+    .card-label {
+      color: #374151;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #f9fafb;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #4b5563;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper { position: relative; }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 14px 44px 14px 16px;
+      color: #f9fafb;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #374151;
+      box-shadow: 0 0 0 3px rgba(55,65,81,0.2);
+    }
+
+    input.is-error   { border-color: #7f1d1d !important; box-shadow: 0 0 0 3px rgba(127,29,29,0.15) !important; }
+    input.is-success { border-color: #14532d !important; box-shadow: 0 0 0 3px rgba(20,83,45,0.15) !important; }
+
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #4b5563;
+      font-size: 16px;
+      padding: 4px;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .toggle-pw:hover { color: #9ca3af; }
+
+    .error-msg {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+    }
+    .error-msg.show { display: flex; }
+
+    /* ── Buttons ── */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .btn-login {
+      flex: 1;
+      background: #b91c1c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+    .btn-login:hover  { background: #dc2626; }
+    .btn-login:active { transform: scale(0.97); }
+
+    .btn-reset {
+      flex: 1;
+      background: #1e1e1e;
+      color: #9ca3af;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+    .btn-reset:hover  { background: #2a2a2a; }
+    .btn-reset:active { transform: scale(0.97); }
+
+    .divider {
+      height: 1px;
+      background: #1a1a1a;
+      margin: 28px 0;
+    }
+
+    .footer-text {
+      color: #2d3748;
+      font-size: 11px;
+      text-align: center;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Success Screen ── */
+    #success-section { display: none; text-align: center; }
+
+    .success-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #052e16;
+      border: 2px solid #14532d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 30px;
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-title {
+      color: #4ade80;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .success-sub {
+      color: #4b5563;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .success-sub span {
+      color: #9ca3af;
+      font-weight: 600;
+    }
+
+    .btn-logout {
+      background: #1e1e1e;
+      color: #6b7280;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-logout:hover { background: #2a2a2a; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <!-- ── LOGIN FORM ── -->
+    <div id="form-section">
+      <p class="card-label">CSC426 — Auth App</p>
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your account to continue.</p>
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+          <input type="text" id="username" placeholder="Enter your username" autocomplete="off" />
+        </div>
+        <p class="error-msg" id="username-error">
+          <span>⚠</span> Username must be at least 3 characters.
+        </p>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" placeholder="Enter your password" />
+          <button class="toggle-pw" id="toggle-pw" onclick="togglePassword()" type="button" aria-label="Show or hide password">
+            👁
+          </button>
+        </div>
+        <p class="error-msg" id="password-error">
+          <span>⚠</span> Password must be at least 6 characters.
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-group">
+        <button class="btn-login" onclick="handleLogin()">Login</button>
+        <button class="btn-reset" onclick="handleReset()">Reset</button>
+      </div>
+
+      <div class="divider"></div>
+      <p class="footer-text">CSC426 Weekly Dev Assignment</p>
+    </div>
+
+    <!-- ── SUCCESS SCREEN ── -->
+    <div id="success-section">
+      <div class="success-ring">✓</div>
+      <h2 class="success-title">Login Successful</h2>
+      <p class="success-sub">Logged in as <span id="welcome-name">@user</span></p>
+      <button class="btn-logout" onclick="handleLogout()">Sign out</button>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Helpers ──
+    function setFieldState(fieldId, errorId, hasError) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(errorId);
+      field.classList.toggle('is-error',   hasError);
+      field.classList.toggle('is-success', !hasError);
+      error.classList.toggle('show',        hasError);
+    }
+
+    function clearFieldState(fieldId, errorId) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(errorId);
+      field.classList.remove('is-error', 'is-success');
+      error.classList.remove('show');
+    }
+
+    // ── Toggle Password Visibility ──
+    function togglePassword() {
+      const pw  = document.getElementById('password');
+      const btn = document.getElementById('toggle-pw');
+      const showing = pw.type === 'text';
+      pw.type      = showing ? 'password' : 'text';
+      btn.textContent = showing ? '👁' : '🙈';
+    }
+
+    // ── Login Handler ──
+    function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      const usernameOk = username.length >= 3;
+      const passwordOk = password.length >= 6;
+
+      setFieldState('username', 'username-error', !usernameOk);
+      setFieldState('password', 'password-error', !passwordOk);
+
+      if (usernameOk && passwordOk) {
+        document.getElementById('welcome-name').textContent = '@' + username;
+        document.getElementById('form-section').style.display    = 'none';
+        document.getElementById('success-section').style.display = 'block';
+      }
+    }
+
+    // ── Reset / Cancel Handler ──
+    function handleReset() {
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('password').type  = 'password';
+      document.getElementById('toggle-pw').textContent = '👁';
+      clearFieldState('username', 'username-error');
+      clearFieldState('password', 'password-error');
+    }
+
+    // ── Logout Handler ──
+    function handleLogout() {
+      handleReset();
+      document.getElementById('success-section').style.display = 'none';
+      document.getElementById('form-section').style.display    = 'block';
+    }
+
+    // ── Real-time validation on blur ──
+    document.getElementById('username').addEventListener('blur', function () {
+      if (this.value.trim()) setFieldState('username', 'username-error', this.value.trim().length < 3);
+    });
+
+    document.getElementById('password').addEventListener('blur', function () {
+      if (this.value) setFieldState('password', 'password-error', this.value.length < 6);
+    });
+
+    // ── Allow Enter key to submit ──
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>
